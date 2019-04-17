@@ -1,8 +1,27 @@
 'use strict';
 
-// const awsSdk = require('aws-sdk');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
+const fxp = require('fast-xml-parser');
+// const RSS = require('rss.js');
+let audioFileMatcher = /([^/]*\.)(mp3|wav)$/;
 
-// const transcribeService = new awsSdk.TranscribeService();
+let loadRSS = () => {
+  let params = {
+    Bucket: process.env.EPISODES_BUCKET,
+    Key: process.env.RSS_FILE
+  };
+  return new Promise((resolve, reject) => {
+    s3.getObject(params, function(err, data) {
+      if (err) {
+        console.log(err, err.stack, `UNABLE TO OBTAIN RSS FILE ${RSS_FILE}`);
+        reject();
+        throw err;
+      }
+      resolve(data);
+    });
+  });
+};
 
 /**
  * Scan all uploads.
@@ -11,13 +30,20 @@
  *
  */
 module.exports.generateRSS = async (event, context, callback) => {
-  console.log(event.Records);
+  let record = event.Records[0];
+  let file = record.s3.object;
 
-  const records = event.Records;
+  if (file && audioFileMatcher.test(file.key)) {
+    let rss;
+    try {
+      rss = await loadRSS();
+    } catch (error) {
+      console.log(error);
+      return;
+    }
 
-  await records.map(record => {
-    console.log(record);
-  });
+    console.log('RSS', rss.Body.toString('utf-8'));
+  }
 
   // const transcribingPromises = records.map((record) => {
   //   const recordUrl = [

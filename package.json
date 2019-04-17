@@ -1,0 +1,22 @@
+{
+  "name": "generate-rss",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaneadix/generateRSS.git"
+  },
+  "author": "Zane Adickes <zaneadix@gmail.com> (https://github.com/zaneadix)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zaneadix/generateRSS/issues"
+  },
+  "homepage": "https://github.com/zaneadix/generateRSS#readme",
+  "dependencies": {
+    "fast-xml-parser": "3.12.16"
+  }
+}

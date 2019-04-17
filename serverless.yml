@@ -4,15 +4,16 @@ provider:
   name: aws
   runtime: nodejs8.10
   environment:
-    EPISODE_BUCKET: ${self:service}-${opt:stage, self:provider.stage}-podcast-episodes
+    EPISODES_BUCKET: ${self:service}-${opt:stage, self:provider.stage}-podcast-episodes
     RSS_BUCKET: ${self:service}-${opt:stage, self:provider.stage}-rss-bucket
+    RSS_FILE: 'rss.xml'
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:PutObject
         - s3:GetObject
       Resource:
-        - 'arn:aws:s3:::${self:provider.environment.EPISODE_BUCKET}/*'
+        - 'arn:aws:s3:::${self:provider.environment.EPISODES_BUCKET}/*'
         - 'arn:aws:s3:::${self:provider.environment.RSS_BUCKET}/*'
 
 # you can add statements to the Lambda function's IAM Role here
@@ -49,7 +50,7 @@ functions:
     handler: handler.generateRSS
     events:
       - s3:
-          bucket: ${self:provider.environment.EPISODE_BUCKET}
+          bucket: ${self:provider.environment.EPISODES_BUCKET}
           event: s3:ObjectCreated:*
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
