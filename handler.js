@@ -3,8 +3,11 @@
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 const fxp = require('fast-xml-parser');
+const podcastDetails = require('./podcastDetails.json');
 // const RSS = require('rss.js');
 let audioFileMatcher = /([^/]*\.)(mp3|wav)$/;
+
+console.log(podcastDetails);
 
 let loadRSS = () => {
   let params = {
@@ -15,8 +18,7 @@ let loadRSS = () => {
     s3.getObject(params, function(err, data) {
       if (err) {
         console.log(err, err.stack, `UNABLE TO OBTAIN RSS FILE ${RSS_FILE}`);
-        reject();
-        throw err;
+        reject(err);
       }
       resolve(data);
     });
@@ -38,6 +40,7 @@ module.exports.generateRSS = async (event, context, callback) => {
     try {
       rss = await loadRSS();
     } catch (error) {
+      console.log('REJECT CAUSES CATCH');
       console.log(error);
       return;
     }
